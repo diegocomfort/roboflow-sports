@@ -1,0 +1,17 @@
+* pitch detection
+ - 35.9 fps
+
+* player detection
+ - 16.3 fps
+
+* ball detection 
+ - 5.5 fps
+
+* player tracking
+ - 16.3 fps
+
+* team classification
+ - 4.6 fps + a few seconds initialization
+
+* radar
+ - 4.4 fps
