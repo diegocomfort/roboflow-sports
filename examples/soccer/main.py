@@ -9,6 +9,9 @@ import supervision as sv
 from tqdm import tqdm
 from ultralytics import YOLO
 
+import sys
+import os
+sys.path.append(os.path.abspath("../../"))
 from sports.annotators.soccer import draw_pitch, draw_points_on_pitch
 from sports.common.ball import BallTracker, BallAnnotator
 from sports.common.team import TeamClassifier
