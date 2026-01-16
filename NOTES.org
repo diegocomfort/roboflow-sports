@@ -1,17 +1,55 @@
-* pitch detection
+* dcpc (r5-5600X, rtx3080)
+** pitch detection
  - 35.9 fps
 
-* player detection
+** player detection
  - 16.3 fps
 
-* ball detection 
+** ball detection 
  - 5.5 fps
 
-* player tracking
+** player tracking
  - 16.3 fps
 
-* team classification
+** team classification
  - 4.6 fps + a few seconds initialization
 
-* radar
+** radar
  - 4.4 fps
+
+* fw13 (r5-7640U)
+need a way to run remotely because my laptopt ain't it
+
+device='mps' -> apple silicon
+device='cuda' -> gpu
+
+** Demos
+*** pitch detection
+ - 1.67s/frame
+ - good with center of pitch
+ - breaks when one end is off-screen
+ - hallucinated a red-32 point at bottom of screen
+
+*** player detection
+6.44s/frame
+ - overall good
+ - sometimes struggles with managers or players on sideline
+
+*** ball detection
+- 22s/frame
+- (not done, yet)
+
+*** player tracking
+- 6.3s/frame
+ - swaps players that come in contact (1/15 in demo)
+
+*** team classification
+- 16s/frame
+- Horrible, doesn't work at all
+
+*** radar 
+ - 18.5s/frame
+ - ran for about 18 out of 30s
+ - very bad
+ - (for some) 2d nowhere near actual positions
+
