@@ -415,8 +415,8 @@ def main(source_video_path: str, target_video_path: str, device: str, mode: Mode
             sink.write_frame(frame)
 
             cv2.imshow("frame", frame)
-	    progress_bar.update()
-	    progress_bar.refresh()
+            progress_bar.update()
+            progress_bar.refresh()
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         cv2.destroyAllWindows()
