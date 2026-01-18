@@ -8,6 +8,7 @@ import numpy as np
 import supervision as sv
 from tqdm import tqdm
 from ultralytics import YOLO
+# import torch
 
 import sys
 import os
@@ -389,7 +390,11 @@ def run_radar(source_video_path: str, device: str) -> Iterator[np.ndarray]:
         yield annotated_frame
 
 
-def main(source_video_path: str, target_video_path: str, device: str, mode: Mode) -> None:
+def main(source_video_path: str,
+         output_video_path: str,
+         device: str,
+         mode: Mode,
+         multi_thread: bool) -> None:
     if mode == Mode.PITCH_DETECTION:
         frame_generator = run_pitch_detection(
             source_video_path=source_video_path, device=device)
@@ -411,9 +416,15 @@ def main(source_video_path: str, target_video_path: str, device: str, mode: Mode
     else:
         raise NotImplementedError(f"Mode {mode} is not implemented.")
 
+    # Breaks video saving
+    # if device == "cpu" and multi_thread:
+        # torch.set_num_threads(os.cpu_count())
+        # torch.set_num_interop_threads(1)
     video_info = sv.VideoInfo.from_video_path(source_video_path)
     progress_bar = tqdm(range(video_info.total_frames))
-    with sv.VideoSink(target_video_path, video_info) as sink:
+    if output_video_path == None:
+        output_video_path = input_video_path + ".out"
+    with sv.VideoSink(output_video_path, video_info) as sink:
         for frame in frame_generator:
             sink.write_frame(frame)
 
@@ -427,14 +438,16 @@ def main(source_video_path: str, target_video_path: str, device: str, mode: Mode
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('--source_video_path', type=str, required=True)
-    parser.add_argument('--target_video_path', type=str, required=True)
-    parser.add_argument('--device', type=str, default='cpu')
-    parser.add_argument('--mode', type=Mode, default=Mode.PLAYER_DETECTION)
+    parser.add_argument('input_video_path', type=str)
+    parser.add_argument('-o', '--output-video-path', type=str)
+    parser.add_argument('-d', '--device', type=str, default='cpu')
+    parser.add_argument('-m', '--mode', type=Mode, default=Mode.PLAYER_DETECTION)
+    parser.add_argument('--multi-thread', action='store_true')
     args = parser.parse_args()
     main(
-        source_video_path=args.source_video_path,
-        target_video_path=args.target_video_path,
-        device=args.device,
-        mode=args.mode
+        source_video_path=args['input_video_path'],
+        output_video_path=args['output_video_path'],
+        device=args['device'],
+        mode=args['mode'],
+        multi_thread = args['output_video_path']
     )
