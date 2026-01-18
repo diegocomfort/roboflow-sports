@@ -1,3 +1,6 @@
+# large stuff
+examples/soccer/data
+
 # IDE
 .idea/
 .vscode/
