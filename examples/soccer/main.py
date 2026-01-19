@@ -85,6 +85,27 @@ class Mode(Enum):
     TEAM_CLASSIFICATION = 'TEAM_CLASSIFICATION'
     RADAR = 'RADAR'
 
+MAX_CROPS = 7500
+MIN_BOX_AREA = 40 * 40
+CROP_SIZE = 224
+# this was originally written by the one and only ChatGPT
+def get_crops_fast(
+        frame: np.ndarray,
+        detections: sv.Detections
+) -> List[np.ndarray]:
+    """
+    I swear I sill document this latter
+    """
+    crops = []
+    for xyxy in detections.xyxy:
+        x1, y1, x2, y2 in map(int, xyxy)
+        if (x2 - x1) * (y2 - y1) < MIN_BOX_AREA:
+            continue
+        crop = frame[y1:y2, x1:x2]
+        crop = cv2.resize(crop, (CROP_SIZE, CROP_SIZE),
+                          interpolation=cv2.INTER_LINEAR)
+        crops.append(crop)
+    return crops
 
 def get_crops(frame: np.ndarray, detections: sv.Detections) -> List[np.ndarray]:
     """
@@ -287,9 +308,14 @@ def run_team_classification(source_video_path: str, device: str) -> Iterator[np.
 
     crops = []
     for frame in tqdm(frame_generator, desc='collecting crops'):
+        if len(crops) >= MAX_CROPS:
+            break
         result = player_detection_model(frame, imgsz=1280, verbose=False)[0]
         detections = sv.Detections.from_ultralytics(result)
-        crops += get_crops(frame, detections[detections.class_id == PLAYER_CLASS_ID])
+        detections = detections[detections.class_id == PLAYER_CLASS_ID]
+        if len(detections) == 0:
+            continue
+        crops.extend(get_crops_fast(frame, detections))
 
     team_classifier = TeamClassifier(device=device)
     team_classifier.fit(crops)
@@ -335,9 +361,14 @@ def run_radar(source_video_path: str, device: str) -> Iterator[np.ndarray]:
 
     crops = []
     for frame in tqdm(frame_generator, desc='collecting crops'):
+        if len(crops) >= MAX_CROPS:
+            break
         result = player_detection_model(frame, imgsz=1280, verbose=False)[0]
         detections = sv.Detections.from_ultralytics(result)
-        crops += get_crops(frame, detections[detections.class_id == PLAYER_CLASS_ID])
+        detections = detections[detections.class_id == PLAYER_CLASS_ID]
+        if len(detections) == 0:
+            continue
+        crops.extend(get_crops_fast(frame, detections))
 
     team_classifier = TeamClassifier(device=device)
     team_classifier.fit(crops)
