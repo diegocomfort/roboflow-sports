@@ -423,17 +423,17 @@ def main(source_video_path: str,
     video_info = sv.VideoInfo.from_video_path(source_video_path)
     progress_bar = tqdm(range(video_info.total_frames))
     if output_video_path == None:
-        output_video_path = input_video_path + ".out"
+        output_video_path = source_video_path + ".out"
     with sv.VideoSink(output_video_path, video_info) as sink:
         for frame in frame_generator:
             sink.write_frame(frame)
 
-            cv2.imshow("frame", frame)
+            # cv2.imshow("frame", frame)
             progress_bar.update()
             progress_bar.refresh()
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-        cv2.destroyAllWindows()
+            # if cv2.waitKey(1) & 0xFF == ord("q"):
+                # break
+        # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
@@ -445,9 +445,9 @@ if __name__ == '__main__':
     parser.add_argument('--multi-thread', action='store_true')
     args = parser.parse_args()
     main(
-        source_video_path=args['input_video_path'],
-        output_video_path=args['output_video_path'],
-        device=args['device'],
-        mode=args['mode'],
-        multi_thread = args['output_video_path']
+        source_video_path=args.input_video_path,
+        output_video_path=args.output_video_path,
+        device=args.device,
+        mode=args.mode,
+        multi_thread = args.output_video_path
     )
