@@ -423,7 +423,14 @@ def main(source_video_path: str,
     video_info = sv.VideoInfo.from_video_path(source_video_path)
     progress_bar = tqdm(range(video_info.total_frames))
     if output_video_path == None:
-        output_video_path = source_video_path + ".out"
+        path = Path(source_video_path)
+        output_video_path = str(path.parent.resolve()) + "/" + \
+            path.stem + "-" + mode.value + path.suffix
+    print("Mode:", mode)
+    print("Input:", source_video_path)
+    print("Output:", output_video_path)
+    print("Device", device)
+
     with sv.VideoSink(output_video_path, video_info) as sink:
         for frame in frame_generator:
             sink.write_frame(frame)
