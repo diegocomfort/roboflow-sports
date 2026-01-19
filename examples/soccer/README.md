@@ -2,13 +2,9 @@
 
 ## 💻 install
 
-We don't have a Python package yet. Install from source in a
-[**Python>=3.8**](https://www.python.org/) environment.
+Look at [](./setup.sh), and then run it.
 
 ```bash
-pip install git+https://github.com/roboflow/sports.git
-cd examples/soccer
-pip install -r requirements.txt
 ./setup.sh
 ```
 
