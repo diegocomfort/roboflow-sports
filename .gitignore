@@ -1,3 +1,7 @@
+# uv
+pyproject.toml
+uv.lock
+
 # large stuff
 examples/soccer/data
 

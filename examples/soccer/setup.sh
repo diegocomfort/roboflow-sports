@@ -10,6 +10,25 @@ else
     echo "'data' directory already exists."
 fi
 
+uv init --python 3.11
+uv add \
+   ultralytics \
+   gdown\
+   pillow \
+   tqdm \
+   scikit-learn \
+   umap-learn \
+   supervision \
+   opencv-python \
+   opencv-python-headless \
+   numpy \
+   'torch>=2.0' \
+   'transformers>=4.37,<4.41' \
+   sentencepiece \
+   protobuf \
+   'llvmlite==0.46.0' \
+   'numba==0.63.1'
+
 # download the models
 gdown -O "$DIR/data/football-ball-detection.pt" "https://drive.google.com/uc?id=1isw4wx-MK9h9LMr36VvIWlJD6ppUvw7V"
 gdown -O "$DIR/data/football-player-detection.pt" "https://drive.google.com/uc?id=17PXFNlx-jI7VjVo_vQnB1sONjRyvoB-q"
