@@ -309,14 +309,15 @@ def run_team_classification(source_video_path: str, device: str) -> Iterator[np.
 
     crops = []
     for frame in tqdm(frame_generator, desc='collecting crops'):
-        if len(crops) >= MAX_CROPS:
-            break
+        # if len(crops) >= MAX_CROPS:
+            # break
         result = player_detection_model(frame, imgsz=1280, verbose=False)[0]
         detections = sv.Detections.from_ultralytics(result)
         detections = detections[detections.class_id == PLAYER_CLASS_ID]
-        if len(detections) == 0:
-            continue
-        crops.extend(get_crops_fast(frame, detections))
+        crops += get_crops(frame, detections)
+        # if len(detections) == 0:
+            # continue
+        # crops.extend(get_crops_fast(frame, detections))
 
     team_classifier = TeamClassifier(device=device)
     team_classifier.fit(crops)
@@ -362,14 +363,15 @@ def run_radar(source_video_path: str, device: str) -> Iterator[np.ndarray]:
 
     crops = []
     for frame in tqdm(frame_generator, desc='collecting crops'):
-        if len(crops) >= MAX_CROPS:
-            break
+        # if len(crops) >= MAX_CROPS:
+            # break
         result = player_detection_model(frame, imgsz=1280, verbose=False)[0]
         detections = sv.Detections.from_ultralytics(result)
         detections = detections[detections.class_id == PLAYER_CLASS_ID]
-        if len(detections) == 0:
-            continue
-        crops.extend(get_crops_fast(frame, detections))
+        crops += get_crops(frame, detections)
+        # if len(detections) == 0:
+            # continue
+        # crops.extend(get_crops_fast(frame, detections))
 
     team_classifier = TeamClassifier(device=device)
     team_classifier.fit(crops)
