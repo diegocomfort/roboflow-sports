@@ -9,6 +9,7 @@ import supervision as sv
 from tqdm import tqdm
 from ultralytics import YOLO
 # import torch
+from pathlib import Path
 
 import sys
 import os
@@ -98,7 +99,7 @@ def get_crops_fast(
     """
     crops = []
     for xyxy in detections.xyxy:
-        x1, y1, x2, y2 in map(int, xyxy)
+        x1, y1, x2, y2 = map(int, xyxy)
         if (x2 - x1) * (y2 - y1) < MIN_BOX_AREA:
             continue
         crop = frame[y1:y2, x1:x2]
