@@ -426,6 +426,7 @@ def run_radar(source_video_path: str, device: str) -> Iterator[np.ndarray]:
 
 def main(source_video_path: str,
          output_video_path: str,
+         output_dir: str,
          device: str,
          mode: Mode,
          multi_thread: bool) -> None:
@@ -458,7 +459,11 @@ def main(source_video_path: str,
     progress_bar = tqdm(range(video_info.total_frames))
     if output_video_path == None:
         path = Path(source_video_path)
-        output_video_path = str(path.parent.resolve()) + "/" + \
+        if output_dir == None:
+            output_dir = str(path.parent.resolve())
+        else:
+            output_dir = str(Path(output_dir))
+        output_video_path = output_dir + "/" + \
             path.stem + "-" + mode.value + path.suffix
     print("Mode:", mode)
     print("Input:", source_video_path)
@@ -481,6 +486,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('input_video_path', type=str)
     parser.add_argument('-o', '--output-video-path', type=str)
+    parser.add_argument('-O', '--output-dir', type=str)
     parser.add_argument('-d', '--device', type=str, default='cpu')
     parser.add_argument('-m', '--mode', type=Mode, default=Mode.PLAYER_DETECTION)
     parser.add_argument('--multi-thread', action='store_true')
@@ -488,6 +494,7 @@ if __name__ == '__main__':
     main(
         source_video_path=args.input_video_path,
         output_video_path=args.output_video_path,
+        output_dir=args.output_dir,
         device=args.device,
         mode=args.mode,
         multi_thread = args.output_video_path
