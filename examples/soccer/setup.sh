@@ -4,10 +4,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check if 'data' directory does not exist and then create it
-if [[ ! -e $DIR/data ]]; then
-    mkdir "$DIR/data"
-else
-    echo "'data' directory already exists."
+if [[ ! -e $DIR/data/tests ]]; then
+    mkdir -p "$DIR/data/tests"
 fi
 
 uv init --python 3.11
